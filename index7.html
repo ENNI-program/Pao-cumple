@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Cumpleaños 🎉</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Loader */
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ff0080, #ffcc00);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+    animation: fadeOut 0.5s forwards;
+    animation-delay: 3s;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+/* Pastel */
+#cakeScreen {
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cake {
+    font-size: 100px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cake:hover {
+    transform: scale(1.1);
+}
+
+/* Nota principal */
+#note {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    padding-bottom: 120px; 
+}
+
+/* Reproductor */
+.player {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px;
+    margin: 15px auto;
+    width: 280px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.cover {
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.play {
+    font-size: 25px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.progress {
+    width: 100%;
+    cursor: pointer;
+}
+
+/* GALERÍA */
+.galeria {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 350px;
+}
+
+.circulo {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    animation: rotar 20s linear infinite;
+}
+
+.circulo img {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    animation: des-rotar 20s linear infinite; 
+}
+
+.circulo img:nth-child(1) { top: 0; left: 105px; }
+.circulo img:nth-child(2) { top: 50px; right: 5px; }
+.circulo img:nth-child(3) { bottom: 50px; right: 5px; }
+.circulo img:nth-child(4) { bottom: 0; left: 105px; }
+.circulo img:nth-child(5) { bottom: 50px; left: 5px; }
+.circulo img:nth-child(6) { top: 50px; left: 5px; }
+
+@keyframes rotar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes des-rotar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
+
+/* BOTÓN SORPRESA DE LA CARTA */
+#btnSorpresa {
+    display: none; /* Oculto al inicio */
+    margin: 30px auto;
+    padding: 15px 30px;
+    font-size: 18px;
+    background: linear-gradient(45deg, #ff0080, #ffcc00);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(255, 0, 128, 0.4);
+    animation: pulso 1.5s infinite;
+}
+
+@keyframes pulso {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* SECCIÓN DE LA CARTA Y VIDEO */
+#cartaScreen {
+    display: none; /* Oculto al inicio */
+    text-align: center;
+    padding: 30px 20px;
+    background: #111;
+    min-height: 100vh;
+}
+
+.contenido-carta {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed #ff0080;
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 500px;
+    margin: 0 auto 30px auto;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.video-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+video {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+}
+
+.btn-volver {
+    margin-top: 20px;
+    background: transparent;
+    color: #aaa;
+    border: 1px solid #aaa;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Texto final fijo */
+#mensajeFinal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    padding: 15px 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    z-index: 5;
+    pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader">
+    <h1>🎉 Cargando sorpresa 🎂</h1>
+</div>
+
+<div id="cakeScreen">
+    <div class="cake" onclick="mostrarNota()">🎂</div>
+    <p>Tócame</p>
+</div>
+
+<div id="note">
+    <h2>💌 Feliz Cumpleaños</h2>
+
+    <div class="player">
+        <img src="portada1.jpg" class="cover" alt="Portada 1">
+        <p>Canción 1 🎉</p>
+        <div class="controls">
+            <span class="play" id="btn1" onclick="togglePlay(1)">▶</span>
+        </div>
+        <input type="range" id="progress1" class="progress" value="0" oninput="setUpdate(1)">
+    </div>
+
+    <div class="player">
+        <img src="Portada2.1.jpg" class="cover" alt="Portada 2">
+        <p>Canción 2 💖</p>
+        <div class="controls">
+            <span class="play" id="btn2" onclick="togglePlay(2)">▶</span>
+        </div>
+        <input type="range" id="progress2" class="progress" value="0" oninput="setUpdate(2)">
+    </div>
+
+    <div class="player">
+        <img src="Portada3.jpg" class="cover" alt="Portada 3">
+        <p>Canción 3 ✨</p>
+        <div class="controls">
+            <span class="play" id="btn3" onclick="togglePlay(3)">▶</span>
+        </div>
+        <input type="range" id="progress3" class="progress" value="0" oninput="setUpdate(3)">
+    </div>
+
+    <div class="galeria">
+        <div class="circulo">
+            <img src="Img8.jpg" alt="Foto 1">
+            <img src="Img9.jpg" alt="Foto 2">
+            <img src="Img10.jpg" alt="Foto 3">
+            <img src="Img11.jpg" alt="Foto 4">
+            <img src="Img12.jpg" alt="Foto 5">
+            <img src="Img13.jpg" alt="Foto 6">
+        </div>
+    </div>
+
+    <button id="btnSorpresa" onclick="abrirCarta()">Abrir mi Carta Sorpresa 🎁</button>
+
+</div>
+
+<div id="cartaScreen">
+    <h2>📩 Una carta para ti...</h2>
+    <div class="contenido-carta">
+        <p>¡Hola! Nunca Voy a tener las palabras exactas, para ecplicar lobque significas para mi, pero gracias por ser como eres, por tu amistad y por ser como eres, por tu amistad y por demostrarme queberes de las amigad que abrazaria siempre sin chaleco, Feliz Cumpmeaños. ❤️</p>
+    </div>
+
+    <div class="video-container">
+        <video id="videoSorpresa" src="video.mp4" controls></video>
+    </div>
+
+    <button class="btn-volver" onclick="volverANota()">⬅ Volver atrás</button>
+</div>
+
+<div id="mensajeFinal">
+    🎉 Feliz Cumpleaños 🎉
+</div>
+
+<audio id="song1" src="cancion1.mp3"></audio>
+<audio id="song2" src="cancion2.1.mp3"></audio>
+<audio id="song3" src="cancion3.mp3"></audio>
+
+<script>
+// Registro para saber qué canciones ya terminaron por completo
+let cancionesEscuchadas = {
+    1: false,
+    2: false,
+    3: false
+};
+
+// Mostrar pastel tras el loader
+setTimeout(() => {
+    document.getElementById("cakeScreen").style.display = "flex";
+}, 3500);
+
+function mostrarNota() {
+    document.getElementById("cakeScreen").style.display = "none";
+    document.getElementById("note").style.display = "block";
+}
+
+// Música
+function togglePlay(num) {
+    let audio = document.getElementById("song" + num);
+    let btn = document.getElementById("btn" + num);
+
+    if (audio.paused) {
+        pauseAll();
+        audio.play();
+        btn.textContent = "⏸";
+    } else {
+        audio.pause();
+        btn.textContent = "▶";
+    }
+}
+
+function pauseAll() {
+    document.querySelectorAll("audio").forEach((a, index) => {
+        a.pause();
+        document.getElementById("btn" + (index + 1)).textContent = "▶";
+    });
+}
+
+// Actualizar barras de progreso y verificar fin de reproducción
+setInterval(() => {
+    for (let i = 1; i <= 3; i++) {
+        let audio = document.getElementById("song" + i);
+        let progress = document.getElementById("progress" + i);
+
+        if (audio.duration && !audio.paused) {
+            progress.value = (audio.currentTime / audio.duration) * 100;
+        }
+        
+        if (audio.ended) {
+            document.getElementById("btn" + i).textContent = "▶";
+            progress.value = 0;
+            
+            // Marcar esta canción como escuchada con éxito
+            cancionesEscuchadas[i] = true;
+            verificarCancionesCompletadas();
+        }
+    }
+}, 500);
+
+function setUpdate(num) {
+    let audio = document.getElementById("song" + num);
+    let progress = document.getElementById("progress" + num);
+    
+    if (audio.duration) {
+        audio.currentTime = (progress.value / 100) * audio.duration;
+    }
+}
+
+// Comprobar si las tres canciones terminaron para revelar el botón
+function verificarCancionesCompletadas() {
+    if (cancionesEscuchadas[1] && cancionesEscuchadas[2] && cancionesEscuchadas[3]) {
+        let btn = document.getElementById("btnSorpresa");
+        if (btn.style.display !== "block") {
+            btn.style.display = "block";
+            // Hace un scroll automático hacia el botón para que el usuario lo vea de inmediato
+            btn.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+}
+
+// Acciones de la carta y video
+function abrirCarta() {
+    pauseAll(); // Detiene cualquier música que haya quedado suelta
+    document.getElementById("note").style.display = "none";
+    document.getElementById("cartaScreen").style.display = "block";
+    
+    // Reproduce el video automáticamente al abrir la carta
+    let video = document.getElementById("videoSorpresa");
+    video.play().catch(error => {
+        console.log("Auto-play bloqueado por el navegador, requiere interacción manual.");
+    });
+}
+
+function volverANota() {
+    // Pausa el video si deciden regresar
+    let video = document.getElementById("videoSorpresa");
+    video.pause();
+
+    document.getElementById("cartaScreen").style.display = "none";
+    document.getElementById("note").style.display = "block";
+}
+</script>
+
+</body>
+</html>
